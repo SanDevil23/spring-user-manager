@@ -34,4 +34,13 @@ public class UserService implements IUserService{
     public List<User> getAllUsers() {
         return List.of();
     }
+    @Override
+    public User updateUser(User user) {
+        return userRepo.save(user);
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        userRepo.deleteById(userId);
+    }
 }
