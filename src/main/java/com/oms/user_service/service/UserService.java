@@ -2,19 +2,19 @@ package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService{
+
     private final UserRepository userRepo;
 
-    @Autowired
-    public UserService(UserRepository userRepo){
-        this.userRepo = userRepo;
-    }
+
 
     @Override
     public User createUser(User user){
