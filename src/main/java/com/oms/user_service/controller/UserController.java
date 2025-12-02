@@ -18,8 +18,8 @@ public class UserController {
 
     private final IUserService userService;
 
-    @PostMapping("/add-user")
-    public ResponseEntity<User> createUser(User user){
+    @PostMapping("/add")
+    public ResponseEntity<User> createUser(@RequestBody User user){
         log.info("Received user data to be processed: {}", user);
         User savedUser = userService.createUser(user);
         log.info("User has been saved with id: {}", savedUser.getUserId());
