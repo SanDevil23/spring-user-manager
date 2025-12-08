@@ -1,12 +1,14 @@
+
 package com.oms.user_service.service;
 
 
-import com.oms.user_service.model.User;
+import com.oms.user_service.dto.UserRequestDto;
+import com.oms.user_service.dto.UserResponseDto;
 
 import java.util.List;
 
 public interface IUserService {
-    User createUser(User user);
-    User getUserById(Long userId);
-    List<User> getAllUsers();
+    UserResponseDto createUser(UserRequestDto user);
+    UserResponseDto getUserById(Long userId);
+    List<UserResponseDto> getAllUsers();
 }
