@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
 
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericErrors(Exception e){
         log.info("Handling Generic errors: {}",e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(
