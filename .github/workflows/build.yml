@@ -36,5 +36,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-#      - name: Build and Test
-#        run: mvn -B clean verify -Dspring.profiles.active=test
+      - name: Build
+        run: mvn -B clean package -DskipTests
+
+      - name: Run Tests (ALLOWED TO FAIL)
+        run: mvn -B verify -Dspring.profiles.active=test
+        continue-on-error: true
