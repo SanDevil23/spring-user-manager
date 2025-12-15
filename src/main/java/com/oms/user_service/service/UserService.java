@@ -14,8 +14,6 @@ public class UserService implements IUserService{
 
     private final UserRepository userRepo;
 
-
-
     @Override
     public User createUser(User user){
         try {
