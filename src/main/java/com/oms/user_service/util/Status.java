@@ -1,5 +1,4 @@
-package com.oms.user_service.util
-import lombok.Getter;
+package com.oms.user_service.util;
 
 public enum Status {
     ACTIVE,
