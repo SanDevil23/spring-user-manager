@@ -14,8 +14,6 @@ public class UserService implements IUserService{
 
     private final UserRepository userRepo;
 
-
-
     @Override
     public User createUser(User user){
         try {
@@ -33,5 +31,20 @@ public class UserService implements IUserService{
     @Override
     public List<User> getAllUsers() {
         return List.of();
+    }
+
+    @Override
+    public void DeleteUserById(Long userId){
+        return;
+    }
+
+    @Override
+    public void DropUsers(){
+        return;
+    }
+
+    @Override
+    public User UpdateUser(User user){
+        return user;
     }
 }
