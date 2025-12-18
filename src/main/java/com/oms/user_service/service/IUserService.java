@@ -9,4 +9,7 @@ public interface IUserService {
     User createUser(User user);
     User getUserById(Long userId);
     List<User> getAllUsers();
+    void DeleteUserById(Long userId);
+    void DropUsers();
+    User UpdateUser(User user);
 }
