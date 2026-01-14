@@ -27,7 +27,6 @@ public class User {
     private String UserName;
     private String Email;
     private Status status;
-    private Date DOB;
     private boolean isAdmin;
     private Date createdAt;
     private Date updatedAt;
