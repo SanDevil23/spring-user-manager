@@ -3,7 +3,6 @@ package com.oms.user_service.service;
 import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,22 +24,22 @@ public class UserService implements IUserService{
 
     @Override
     public User getUserById(Long userId) {
-        return null;
+        return userRepo.filterUserById(userId);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return List.of();
+        return userRepo.findAll();
     }
 
     @Override
     public void DeleteUserById(Long userId){
-        return;
+        userRepo.deleteById(userId);
     }
 
     @Override
     public void DropUsers(){
-        return;
+        userRepo.deleteAll();
     }
 
     @Override
