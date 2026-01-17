@@ -33,8 +33,14 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void DeleteUserById(Long userId){
-        userRepo.deleteById(userId);
+    public User DeleteUserById(Long userId){
+        if (userRepo.existsById(userId)){
+            User user = userRepo.filterUserById(userId);
+            userRepo.deleteById(userId);
+            return user;
+        }
+        // log if the user does not exists
+        return null;
     }
 
     @Override
@@ -43,7 +49,17 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User UpdateUser(User user){
-        return user;
+    public User UpdateUser(User updatedUser){
+        // extract user id from the request
+        long id = updatedUser.getUserId();
+
+        // fetch the user by id
+        User userToBeUpdated = userRepo.filterUserById(id);
+
+        // replace the existing user object with the updated one
+        userToBeUpdated = updatedUser;
+
+        return userToBeUpdated;
+
     }
 }
