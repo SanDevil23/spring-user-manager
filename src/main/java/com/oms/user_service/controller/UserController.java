@@ -1,5 +1,7 @@
 package com.oms.user_service.controller;
 
+import com.oms.user_service.dto.CreateUserRequestDto;
+import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.model.User;
 import com.oms.user_service.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,12 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/add")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        log.info("Received user data to be processed: {}", user);
-        User savedUser = userService.createUser(user);
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody CreateUserRequestDto req){
+        log.info("Received user data to be processed: {}", req );
+        User savedUser = userService.createUser(req);
         log.info("User has been saved with id: {}", savedUser.getUserId());
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        log.info("User data: {}", savedUser);
+        return new ResponseEntity<>(savedUser.toDto(savedUser), HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}")
@@ -43,7 +46,7 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<User> deleteUser(@PathVariable("userId") Long userId){
         User user = userService.DeleteUserById(userId);
         if (user==null){
@@ -54,14 +57,14 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<String> clear(){
         userService.DropUsers();
         log.info("User database cleared");
         return new ResponseEntity<>("Cleared Users", HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User updatedUser){
         User storedUser = userService.UpdateUser(updatedUser);
         if (storedUser.equals(updatedUser)){
