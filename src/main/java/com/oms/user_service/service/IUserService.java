@@ -12,4 +12,5 @@ public interface IUserService {
     User DeleteUserById(Long userId);
     void DropUsers();
     User UpdateUser(User user);
+    void updateUserStatus(Long id, String state);
 }

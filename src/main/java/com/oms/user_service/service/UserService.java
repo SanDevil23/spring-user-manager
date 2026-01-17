@@ -2,6 +2,7 @@ package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.model.User;
+import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class UserService implements IUserService{
             userRepo.deleteById(userId);
             return user;
         }
-        // log if the user does not exists
+        // log if the user does not exist
         return null;
     }
 
@@ -48,6 +49,11 @@ public class UserService implements IUserService{
         userRepo.deleteAll();
     }
 
+    /**
+     * Method to update majority fields in the existing user
+     * @param updatedUser Updated user object passed down from the API layer
+     * @return returns the updated user state
+     */
     @Override
     public User UpdateUser(User updatedUser){
         // extract user id from the request
@@ -61,5 +67,16 @@ public class UserService implements IUserService{
 
         return userToBeUpdated;
 
+    }
+
+    /**
+     * Method to update the user status
+     * @param userid
+     * @param state
+     */
+    @Override
+    public void updateUserStatus(Long userid, String state){
+        User user = userRepo.filterUserById(userid);
+        // TODO: DTO based approach to validate any incoming request for updating the state
     }
 }
