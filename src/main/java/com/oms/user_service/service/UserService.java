@@ -1,11 +1,13 @@
 package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
+import com.oms.user_service.dto.CreateUserRequestDto;
 import com.oms.user_service.model.User;
 import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.util.List;
 
 @Service
@@ -15,8 +17,9 @@ public class UserService implements IUserService{
     private final UserRepository userRepo;
 
     @Override
-    public User createUser(User user){
+    public User createUser(CreateUserRequestDto req){
         try {
+            User user = req.toEntity(req);
             return userRepo.save(user);
         }catch (Exception e){
             return null;
