@@ -1,11 +1,13 @@
 package com.oms.user_service.controller;
 
 import com.oms.user_service.dto.CreateUserRequestDto;
+import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.model.User;
 import com.oms.user_service.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,5 +75,15 @@ public class UserController {
         }
         log.error("Failed to update user data");
         return new ResponseEntity<>(storedUser, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PatchMapping("/update/status")
+    public ResponseEntity<String> updateUserStatus(@RequestBody UpdateUserRequest req){
+        long id = req.getUserId();
+        String state = req.getStatus();
+
+        userService.updateUserStatus(id, state);
+
+        return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
     }
 }
