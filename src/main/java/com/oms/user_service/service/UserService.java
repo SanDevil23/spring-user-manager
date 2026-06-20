@@ -7,7 +7,6 @@ import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.util.List;
 
 @Service
@@ -79,7 +78,19 @@ public class UserService implements IUserService{
      */
     @Override
     public void updateUserStatus(Long userid, String state){
-        User user = userRepo.filterUserById(userid);
-        // TODO: DTO based approach to validate any incoming request for updating the state
+        User userToUpdate = userRepo.filterUserById(userid);
+        state = state.toLowerCase().trim();
+        switch(state) {
+            case "active":
+                userToUpdate.setStatus(Status.ACTIVE);
+                break;
+            case "disabled":
+                userToUpdate.setStatus(Status.DISABLED);
+                break;
+            case "locked":
+                userToUpdate.setStatus(Status.LOCKED);
+                break;
+        }
+        return;
     }
 }
