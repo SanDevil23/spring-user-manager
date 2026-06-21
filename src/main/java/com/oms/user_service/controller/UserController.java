@@ -50,7 +50,7 @@ public class UserController {
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<User> deleteUser(@PathVariable("userId") Long userId){
-        User user = userService.DeleteUserById(userId);
+        User user = userService.deleteUserById(userId);
         if (user==null){
             log.warn("User not found in the database");
             return new ResponseEntity<>((HttpHeaders) null, HttpStatus.NOT_FOUND);
@@ -61,14 +61,14 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> clear(){
-        userService.DropUsers();
+        userService.dropUsers();
         log.info("User database cleared");
         return new ResponseEntity<>("Cleared Users", HttpStatus.OK);
     }
 
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User updatedUser){
-        User storedUser = userService.UpdateUser(updatedUser);
+        User storedUser = userService.updateUser(updatedUser);
         if (storedUser.equals(updatedUser)){
             log.info("User data updated successfully");
             return new ResponseEntity<>(storedUser, HttpStatus.OK);

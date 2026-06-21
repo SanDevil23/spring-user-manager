@@ -36,7 +36,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User DeleteUserById(Long userId){
+    public User deleteUserById(Long userId){
         if (userRepo.existsById(userId)){
             User user = userRepo.filterUserById(userId);
             userRepo.deleteById(userId);
@@ -47,7 +47,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void DropUsers(){
+    public void dropUsers(){
         userRepo.deleteAll();
     }
 
@@ -57,7 +57,7 @@ public class UserService implements IUserService{
      * @return returns the updated user state
      */
     @Override
-    public User UpdateUser(User updatedUser){
+    public User updateUser(User updatedUser){
         // extract user id from the request
         long id = updatedUser.getUserId();
 
