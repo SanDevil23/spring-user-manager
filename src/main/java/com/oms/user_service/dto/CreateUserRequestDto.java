@@ -6,7 +6,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.sql.Time;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Timer;
 
 @Data
 public class CreateUserRequestDto {
@@ -22,12 +25,12 @@ public class CreateUserRequestDto {
 
     public User toEntity(CreateUserRequestDto dto) {
         return User.builder()
-                .UserName(dto.getUserName())
-                .Email(dto.getEmail())
-                .isAdmin(dto.isAdmin())
+                .username(dto.getUserName())
+                .email(dto.getEmail())
+                .admin(dto.isAdmin())
                 .status(Status.DISABLED)
-                .createdAt(new Date())
-                .updatedAt(new Date())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .build();
     }
 }

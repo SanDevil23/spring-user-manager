@@ -1,10 +1,12 @@
 package com.oms.user_service.controller;
 
+import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.CreateUserRequestDto;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.model.User;
 import com.oms.user_service.service.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.sql.Update;
@@ -24,19 +26,19 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/add")
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody CreateUserRequestDto req){
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody CreateUserRequest req){
         log.info("Received user data to be processed: {}", req );
-        User savedUser = userService.createUser(req);
-        log.info("User has been saved with id: {}", savedUser.getUserId());
+        UserResponseDto savedUser = userService.createUser(req);
+        log.info("User has been saved with id: {}", savedUser.getId());
         log.info("User data: {}", savedUser);
-        return new ResponseEntity<>(savedUser.toDto(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") Long userId){
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId){
         log.info("Getting user with id: {}", userId);
-        User user = userService.getUserById(userId);
-        log.info("Gotten user with id: {}",user.getUserId());
+        UserResponseDto user = userService.getUserById(userId);
+        log.info("Found user with id: {}", user.getId());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -49,8 +51,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable("userId") Long userId){
-        User user = userService.deleteUserById(userId);
+    public ResponseEntity<UserResponseDto> deleteUser(@PathVariable("userId") Long userId){
+        UserResponseDto user = userService.deleteUserById(userId);
         if (user==null){
             log.warn("User not found in the database");
             return new ResponseEntity<>((HttpHeaders) null, HttpStatus.NOT_FOUND);
@@ -67,23 +69,16 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User updatedUser){
-        User storedUser = userService.updateUser(updatedUser);
-        if (storedUser.equals(updatedUser)){
-            log.info("User data updated successfully");
-            return new ResponseEntity<>(storedUser, HttpStatus.OK);
-        }
-        log.error("Failed to update user data");
-        return new ResponseEntity<>(storedUser, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody User updatedUser){
+        UserResponseDto storedUser = userService.updateUser(updatedUser);
+        return new ResponseEntity<>(storedUser, HttpStatus.OK);
     }
 
     @PatchMapping("/update/status")
     public ResponseEntity<String> updateUserStatus(@RequestBody UpdateUserRequest req){
         long id = req.getUserId();
         String state = req.getStatus();
-
         userService.updateUserStatus(id, state);
-
         return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
     }
 }

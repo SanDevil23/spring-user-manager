@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User filterUserById(@NotNull Long userId){
         List<User> userList = findAll();
         for (User user : userList){
-            if (userId == user.getUserId()){
+            if (userId.equals(user.getId())){
                 return user;
             }
         }

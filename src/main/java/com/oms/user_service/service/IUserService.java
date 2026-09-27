@@ -1,17 +1,18 @@
 package com.oms.user_service.service;
 
 
-import com.oms.user_service.dto.CreateUserRequestDto;
+import com.oms.user_service.dto.CreateUserRequest;
+import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.model.User;
 
 import java.util.List;
 
 public interface IUserService {
-    User createUser(CreateUserRequestDto req);
-    User getUserById(Long userId);
+    UserResponseDto createUser(CreateUserRequest req);
+    UserResponseDto getUserById(Long userId);
     List<User> getAllUsers();
-    User deleteUserById(Long userId);
+    UserResponseDto deleteUserById(Long userId);
     void dropUsers();
-    User updateUser(User user);
+    UserResponseDto updateUser(User user);
     void updateUserStatus(Long id, String state);
 }

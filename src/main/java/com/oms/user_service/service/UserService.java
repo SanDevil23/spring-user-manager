@@ -1,7 +1,9 @@
 package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
-import com.oms.user_service.dto.CreateUserRequestDto;
+import com.oms.user_service.dto.CreateUserRequest;
+import com.oms.user_service.dto.UserResponseDto;
+import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
 import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
@@ -14,20 +16,21 @@ import java.util.List;
 public class UserService implements IUserService{
 
     private final UserRepository userRepo;
+    private final UserMapper userMapper;
 
     @Override
-    public User createUser(CreateUserRequestDto req){
+    public UserResponseDto createUser(CreateUserRequest req){
         try {
-            User user = req.toEntity(req);
-            return userRepo.save(user);
+            User user = userMapper.toEntity(req);
+            return userMapper.toDto(userRepo.save(user));
         }catch (Exception e){
             return null;
         }
     }
 
     @Override
-    public User getUserById(Long userId) {
-        return userRepo.filterUserById(userId);
+    public UserResponseDto getUserById(Long userId) {
+        return userMapper.toDto(userRepo.filterUserById(userId));
     }
 
     @Override
@@ -36,11 +39,11 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User deleteUserById(Long userId){
+    public UserResponseDto deleteUserById(Long userId){
         if (userRepo.existsById(userId)){
             User user = userRepo.filterUserById(userId);
             userRepo.deleteById(userId);
-            return user;
+            return userMapper.toDto(user);
         }
         // log if the user does not exist
         return null;
@@ -53,21 +56,18 @@ public class UserService implements IUserService{
 
     /**
      * Method to update majority fields in the existing user
+     *
      * @param updatedUser Updated user object passed down from the API layer
      * @return returns the updated user state
      */
     @Override
-    public User updateUser(User updatedUser){
+    public UserResponseDto updateUser(User updatedUser){
         // extract user id from the request
-        long id = updatedUser.getUserId();
+        long id = updatedUser.getId();
 
         // fetch the user by id
         User userToBeUpdated = userRepo.filterUserById(id);
-
-        // replace the existing user object with the updated one
-        userToBeUpdated = updatedUser;
-
-        return userToBeUpdated;
+        return userMapper.toDto(userToBeUpdated);
 
     }
 

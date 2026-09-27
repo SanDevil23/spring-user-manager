@@ -1,49 +1,55 @@
 package com.oms.user_service.model;
-
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.util.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.Date;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_user_email", columnList = "email"),
+                @Index(name = "idx_user_username", columnList = "username")
+        }
+)
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "_user_id_sequence_generator"
-    )
-    @SequenceGenerator(
-            name = "_user_id_sequence_generator",
-            sequenceName = "_user_id_sequence",
-            initialValue = 1,
-            allocationSize = 1
-    )
+
     @Id
-    private long UserId;
-    private String UserName;
-    private String Email;
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user_id_sequence_generator")
+    @SequenceGenerator(name = "user_id_sequence_generator", sequenceName = "user_id_sequence", allocationSize = 1)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private Status status;
-    private boolean isAdmin;
-    private Date createdAt;
-    private Date updatedAt;
 
+    @Column(nullable = false)
+    private boolean admin;
 
-    public UserResponseDto toDto(User user) {
-        return UserResponseDto.builder()
-                .userId(user.getUserId())
-                .userName(user.getUserName())
-                .email(user.getEmail())
-                .status(user.getStatus())
-                .admin(user.isAdmin())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
-    }
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
 }
