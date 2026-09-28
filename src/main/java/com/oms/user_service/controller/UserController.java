@@ -42,6 +42,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    //TODO: design business layer logic to return UserResponseDTO in this API
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(){
         log.info("Retrieving all users");
@@ -52,12 +53,9 @@ public class UserController {
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<UserResponseDto> deleteUser(@PathVariable("userId") Long userId){
+        log.info("Deleting user with id : {}", userId);
         UserResponseDto user = userService.deleteUserById(userId);
-        if (user==null){
-            log.warn("User not found in the database");
-            return new ResponseEntity<>((HttpHeaders) null, HttpStatus.NOT_FOUND);
-        }
-        log.info("User deleted successfully");
+        log.info("User deleted successfully: {}", userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -68,17 +66,18 @@ public class UserController {
         return new ResponseEntity<>("Cleared Users", HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<UserResponseDto> updateUser(@RequestBody User updatedUser){
-        UserResponseDto storedUser = userService.updateUser(updatedUser);
-        return new ResponseEntity<>(storedUser, HttpStatus.OK);
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,@Valid @RequestBody UpdateUserRequest req){
+        UserResponseDto updatedUser = userService.updateUser(userId, req);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @Deprecated
     @PatchMapping("/update/status")
     public ResponseEntity<String> updateUserStatus(@RequestBody UpdateUserRequest req){
-        long id = req.getUserId();
-        String state = req.getStatus();
-        userService.updateUserStatus(id, state);
+//        long id = req.getUserId();
+//        String state = req.getStatus();
+//        userService.updateUserStatus(id, state);
         return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
     }
 }

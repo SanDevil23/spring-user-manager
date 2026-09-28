@@ -2,6 +2,7 @@ package com.oms.user_service.service;
 
 
 import com.oms.user_service.dto.CreateUserRequest;
+import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.model.User;
 
@@ -13,6 +14,6 @@ public interface IUserService {
     List<User> getAllUsers();
     UserResponseDto deleteUserById(Long userId);
     void dropUsers();
-    UserResponseDto updateUser(User user);
+    UserResponseDto updateUser(Long id, UpdateUserRequest user);
     void updateUserStatus(Long id, String state);
 }

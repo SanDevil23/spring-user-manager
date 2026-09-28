@@ -2,6 +2,7 @@ package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.dto.CreateUserRequest;
+import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
@@ -57,18 +58,16 @@ public class UserService implements IUserService{
     /**
      * Method to update majority fields in the existing user
      *
-     * @param updatedUser Updated user object passed down from the API layer
+     * @param req Updated user object passed down from the API layer
      * @return returns the updated user state
      */
     @Override
-    public UserResponseDto updateUser(User updatedUser){
-        // extract user id from the request
-        long id = updatedUser.getId();
-
-        // fetch the user by id
+    public UserResponseDto updateUser(Long id, UpdateUserRequest req){
         User userToBeUpdated = userRepo.filterUserById(id);
+        userToBeUpdated.setUsername(req.getUsername());
+        userToBeUpdated.setEmail(req.getEmail());
+        userRepo.save(userToBeUpdated);
         return userMapper.toDto(userToBeUpdated);
-
     }
 
     /**
