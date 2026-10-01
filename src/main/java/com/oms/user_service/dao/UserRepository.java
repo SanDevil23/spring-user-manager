@@ -9,14 +9,6 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    default User filterUserById(@NotNull Long userId){
-        List<User> userList = findAll();
-        for (User user : userList){
-            if (userId.equals(user.getId())){
-                return user;
-            }
-        }
-        return null;
-    }
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
 }
