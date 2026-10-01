@@ -4,6 +4,7 @@ import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
+import com.oms.user_service.exception.DuplicateResourceException;
 import com.oms.user_service.exception.ResourceNotFoundException;
 import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
@@ -20,8 +21,23 @@ public class UserService implements IUserService{
     private final UserRepository userRepo;
     private final UserMapper userMapper;
 
+    /**
+     * Create a new user if it doesn't already exist in the system
+     * @param req Request body passed down from the API layer to the Service layer
+     * @return
+     */
     @Override
     public UserResponseDto createUser(CreateUserRequest req){
+        if (userRepo.existsByEmail(req.email())){
+            throw new DuplicateResourceException(
+                    "Email already exists: " + req.email()
+            );
+        }
+        if (userRepo.existsByUsername(req.username())){
+            throw new DuplicateResourceException(
+                    "Username already exists: " + req.username()
+            );
+        }
         User user = userMapper.toEntity(req);
         return userMapper.toDto(userRepo.save(user));
     }
@@ -64,6 +80,18 @@ public class UserService implements IUserService{
     public UserResponseDto updateUser(Long id, UpdateUserRequest req){
         User userToBeUpdated = userRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + id));
+
+        if (!userToBeUpdated.getUsername().equals(req.getUsername()) && userRepo.existsByUsername(req.getUsername())){
+            throw new DuplicateResourceException(
+                    "Username already exists: " + req.getUsername()
+            );
+        }
+
+        if (!userToBeUpdated.getEmail().equals(req.getEmail()) && userRepo.existsByEmail(req.getEmail())){
+            throw new DuplicateResourceException(
+                    "Email already exists: " + req.getEmail()
+            );
+        }
 
         userToBeUpdated.setUsername(req.getUsername());
         userToBeUpdated.setEmail(req.getEmail());
