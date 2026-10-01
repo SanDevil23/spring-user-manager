@@ -44,9 +44,9 @@ public class UserController {
 
     //TODO: design business layer logic to return UserResponseDTO in this API
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(){
         log.info("Retrieving all users");
-        List<User> users = userService.getAllUsers();
+        List<UserResponseDto> users = userService.getAllUsers();
         log.info("Retrieved all users");
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @Deprecated
-    @PatchMapping("/update/status")
+    @PatchMapping("/update/status/{userId}")
     public ResponseEntity<String> updateUserStatus(@RequestBody UpdateUserRequest req){
 //        long id = req.getUserId();
 //        String state = req.getStatus();

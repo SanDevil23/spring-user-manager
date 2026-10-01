@@ -4,6 +4,7 @@ import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
+import com.oms.user_service.exception.ResourceNotFoundException;
 import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
 import com.oms.user_service.util.Status;
@@ -21,33 +22,32 @@ public class UserService implements IUserService{
 
     @Override
     public UserResponseDto createUser(CreateUserRequest req){
-        try {
-            User user = userMapper.toEntity(req);
-            return userMapper.toDto(userRepo.save(user));
-        }catch (Exception e){
-            return null;
-        }
+        User user = userMapper.toEntity(req);
+        return userMapper.toDto(userRepo.save(user));
     }
 
     @Override
     public UserResponseDto getUserById(Long userId) {
-        return userMapper.toDto(userRepo.filterUserById(userId));
+        User fetchUser = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + userId));;
+        return userMapper.toDto(fetchUser);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserResponseDto> getAllUsers() {
+        return userRepo.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @Override
     public UserResponseDto deleteUserById(Long userId){
-        if (userRepo.existsById(userId)){
-            User user = userRepo.filterUserById(userId);
-            userRepo.deleteById(userId);
-            return userMapper.toDto(user);
-        }
-        // log if the user does not exist
-        return null;
+        User userToDelete = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + userId));;
+
+        userRepo.delete(userToDelete);
+        return userMapper.toDto(userToDelete);
     }
 
     @Override
@@ -57,17 +57,19 @@ public class UserService implements IUserService{
 
     /**
      * Method to update majority fields in the existing user
-     *
      * @param req Updated user object passed down from the API layer
      * @return returns the updated user state
      */
     @Override
     public UserResponseDto updateUser(Long id, UpdateUserRequest req){
-        User userToBeUpdated = userRepo.filterUserById(id);
+        User userToBeUpdated = userRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + id));
+
         userToBeUpdated.setUsername(req.getUsername());
         userToBeUpdated.setEmail(req.getEmail());
-        userRepo.save(userToBeUpdated);
-        return userMapper.toDto(userToBeUpdated);
+
+        User updatedUser = userRepo.save(userToBeUpdated);
+        return userMapper.toDto(updatedUser);
     }
 
     /**
@@ -77,7 +79,8 @@ public class UserService implements IUserService{
      */
     @Override
     public void updateUserStatus(Long userid, String state){
-        User userToUpdate = userRepo.filterUserById(userid);
+        User userToUpdate = userRepo.findById(userid)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + userid));;
         state = state.toLowerCase().trim();
         switch(state) {
             case "active":
@@ -90,6 +93,5 @@ public class UserService implements IUserService{
                 userToUpdate.setStatus(Status.LOCKED);
                 break;
         }
-        return;
     }
 }
