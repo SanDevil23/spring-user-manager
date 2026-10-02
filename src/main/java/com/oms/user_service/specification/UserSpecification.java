@@ -10,19 +10,19 @@ public class UserSpecification {
                 criteriaBuilder.equal(root.get("status"), status);
     }
 
-    public static Specification<User> usernameContains(String username) {
+    public static Specification<User> usernameIncludes(String usernamePattern) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("username")),
-                        "%" +  username.toLowerCase() + "%"
+                        "%" +  usernamePattern.toLowerCase() + "%"
                 );
     }
 
-    public static Specification<User> emailContains(String email) {
+    public static Specification<User> emailIncludes(String emailExpression) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("email")),
-                        "%" + email.toLowerCase() + "%"
+                        "%" + emailExpression.toLowerCase() + "%"
                 );
     }
 }
