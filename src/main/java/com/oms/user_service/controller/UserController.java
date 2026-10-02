@@ -1,21 +1,20 @@
 package com.oms.user_service.controller;
 
 import com.oms.user_service.dto.CreateUserRequest;
-import com.oms.user_service.dto.CreateUserRequestDto;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
-import com.oms.user_service.model.User;
 import com.oms.user_service.service.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.sql.Update;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -44,11 +43,22 @@ public class UserController {
 
     //TODO: design business layer logic to return UserResponseDTO in this API
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers(){
-        log.info("Retrieving all users");
-        List<UserResponseDto> users = userService.getAllUsers();
-        log.info("Retrieved all users");
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<Page<UserResponseDto>> getAllUsers(
+            @PageableDefault(
+                    size = 20,
+                    sort = "createdAt",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable){
+        log.info("Retrieving users - page: {}, size: {}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        Page<UserResponseDto> users =
+                userService.getAllUsers(pageable);
+
+        return ResponseEntity.ok(users);
     }
 
     @DeleteMapping("/delete/{userId}")
