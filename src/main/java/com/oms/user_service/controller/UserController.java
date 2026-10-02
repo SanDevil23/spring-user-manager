@@ -42,7 +42,14 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    //TODO: design business layer logic to return UserResponseDTO in this API
+    /**
+     * API CALL -> GET /users?status=ACTIVE&username=john&email=gmail&page=0&size=10
+     * @param status
+     * @param email
+     * @param username
+     * @param pageable
+     * @return Page(UserResponseDto)
+     */
     @GetMapping
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
             @RequestParam(required = false) Status status,

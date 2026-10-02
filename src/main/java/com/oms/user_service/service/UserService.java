@@ -62,12 +62,12 @@ public class UserService implements IUserService{
 
         // filter out using username if not null
         if (username != null) {
-            specification = specification.and(UserSpecification.usernameContains(username));
+            specification = specification.and(UserSpecification.usernameIncludes(username));
         }
 
         // filter out using email if not null
         if (email != null) {
-            specification = specification.and(UserSpecification.emailContains(username));
+            specification = specification.and(UserSpecification.emailIncludes(email));
         }
 
         return userRepo.findAll(specification, pageable).map(userMapper::toDto)    ;
