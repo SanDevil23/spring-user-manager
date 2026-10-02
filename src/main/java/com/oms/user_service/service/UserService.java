@@ -10,9 +10,9 @@ import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
 import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -50,11 +50,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public List<UserResponseDto> getAllUsers() {
-        return userRepo.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .toList();
+    public Page<UserResponseDto> getAllUsers(Pageable pageable) {
+        return userRepo.findAll(pageable).map(userMapper::toDto);
     }
 
     @Override
