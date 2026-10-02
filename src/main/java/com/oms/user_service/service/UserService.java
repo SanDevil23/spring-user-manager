@@ -8,10 +8,12 @@ import com.oms.user_service.exception.DuplicateResourceException;
 import com.oms.user_service.exception.ResourceNotFoundException;
 import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
+import com.oms.user_service.specification.UserSpecification;
 import com.oms.user_service.util.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,8 +52,25 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public Page<UserResponseDto> getAllUsers(Pageable pageable) {
-        return userRepo.findAll(pageable).map(userMapper::toDto);
+    public Page<UserResponseDto> getAllUsers(Status status, String username, String email, Pageable pageable) {
+        Specification<User> specification = Specification.where((Specification<User>) null);
+
+        // filter out using status if not null
+        if (status != null) {
+            specification = specification.and(UserSpecification.hasStatus(status));
+        }
+
+        // filter out using username if not null
+        if (username != null) {
+            specification = specification.and(UserSpecification.usernameContains(username));
+        }
+
+        // filter out using email if not null
+        if (email != null) {
+            specification = specification.and(UserSpecification.emailContains(username));
+        }
+
+        return userRepo.findAll(specification, pageable).map(userMapper::toDto)    ;
     }
 
     @Override

@@ -4,6 +4,7 @@ package com.oms.user_service.service;
 import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
+import com.oms.user_service.util.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 public interface IUserService {
     UserResponseDto createUser(CreateUserRequest req);
     UserResponseDto getUserById(Long userId);
-    Page<UserResponseDto> getAllUsers(Pageable pageable);
+    Page<UserResponseDto> getAllUsers(Status status, String username, String email, Pageable pageable);
     UserResponseDto deleteUserById(Long userId);
     void dropUsers();
     UserResponseDto updateUser(Long id, UpdateUserRequest user);

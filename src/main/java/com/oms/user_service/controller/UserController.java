@@ -4,6 +4,7 @@ import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.service.IUserService;
+import com.oms.user_service.util.Status;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,9 @@ public class UserController {
     //TODO: design business layer logic to return UserResponseDTO in this API
     @GetMapping
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username,
             @PageableDefault(
                     size = 20,
                     sort = "createdAt",
@@ -56,7 +60,7 @@ public class UserController {
         );
 
         Page<UserResponseDto> users =
-                userService.getAllUsers(pageable);
+                userService.getAllUsers(status, username, email , pageable);
 
         return ResponseEntity.ok(users);
     }
