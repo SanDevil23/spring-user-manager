@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+// annotation automatically intercepts any exception from controller
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -92,6 +93,25 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    public ResponseEntity<ErrorResponse> MethodArgumentTypeMismatchException(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request
+    ) {
+        ErrorResponse response = ErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Invalid Parameter")
+                .message(
+                        "Invalid value for parameter: " + exception.getParameter()
+                )
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(response);
     }
 }
