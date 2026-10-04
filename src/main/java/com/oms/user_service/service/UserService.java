@@ -32,19 +32,8 @@ public class UserService implements IUserService{
      */
     @Override
     public UserResponseDto createUser(CreateUserRequest req){
-        if (userRepo.existsByEmail(req.email())){
-            throw new DuplicateResourceException(
-                    "Email already exists: " + req.email()
-            );
-        }
-        if (userRepo.existsByUsername(req.username())){
-            throw new DuplicateResourceException(
-                    "Username already exists: " + req.username()
-            );
-        }
-        User user = userMapper.toEntity(req);
-        String passwordHash = passwordEncoder.encode(req.password());
-        user.setPasswordHash(passwordHash);
+        User user = createUserEntity(req);
+        user.setAdmin(false);
         return userMapper.toDto(userRepo.save(user));
     }
 
@@ -141,5 +130,31 @@ public class UserService implements IUserService{
                 userToUpdate.setStatus(Status.LOCKED);
                 break;
         }
+    }
+
+    @Override
+    public UserResponseDto createAdminUser(CreateUserRequest req){
+        User user = createUserEntity(req);
+        user.setAdmin(true);  // set user to ADMIN
+        return userMapper.toDto(userRepo.save(user));
+    }
+
+    private User createUserEntity(CreateUserRequest req){
+        if (userRepo.existsByEmail(req.email())){
+            throw new DuplicateResourceException(
+                    "Email already exists: " + req.email()
+            );
+        }
+        if (userRepo.existsByUsername(req.username())){
+            throw new DuplicateResourceException(
+                    "Username already exists: " + req.username()
+            );
+        }
+        User user = userMapper.toEntity(req);
+
+        String passwordHash = passwordEncoder.encode(req.password());
+        user.setPasswordHash(passwordHash);
+
+        return user;
     }
 }
