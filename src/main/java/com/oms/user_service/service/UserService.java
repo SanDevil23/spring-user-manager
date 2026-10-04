@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,7 @@ public class UserService implements IUserService{
 
     private final UserRepository userRepo;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Create a new user if it doesn't already exist in the system
@@ -41,6 +43,8 @@ public class UserService implements IUserService{
             );
         }
         User user = userMapper.toEntity(req);
+        String passwordHash = passwordEncoder.encode(req.password());
+        user.setPasswordHash(passwordHash);
         return userMapper.toDto(userRepo.save(user));
     }
 
