@@ -26,7 +26,7 @@ public class UserService implements IUserService{
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Create a new user if it doesn't already exist in the system
+     * Create a fresh NON-ADMIN user
      * @param req Request body passed down from the API layer to the Service layer
      * @return
      */
@@ -132,6 +132,11 @@ public class UserService implements IUserService{
         }
     }
 
+    /**
+     * Create a new ADMIN/ROOT user
+     * @param req
+     * @return
+     */
     @Override
     public UserResponseDto createAdminUser(CreateUserRequest req){
         User user = createUserEntity(req);
