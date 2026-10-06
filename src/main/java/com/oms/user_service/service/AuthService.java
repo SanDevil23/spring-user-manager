@@ -15,12 +15,15 @@ public class AuthService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final IUserService userService;
+    private final JwtService jwtService;
 
     public AuthService(
             UserRepository userRepo,
             PasswordEncoder passwordEncoder,
-            IUserService userService
+            IUserService userService,
+            JwtService jwtService
     ){
+        this.jwtService = jwtService;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
@@ -43,6 +46,8 @@ public class AuthService {
             throw new ResourceNotFoundException("Invalid Credentials");
         }
 
-        return new AuthResponse("TEMPORARY_TOKEN");
+        String accessToken = jwtService.generateToken(user.getId());
+
+        return new AuthResponse(accessToken);
     }
 }
