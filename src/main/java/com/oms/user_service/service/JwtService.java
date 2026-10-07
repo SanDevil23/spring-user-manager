@@ -31,4 +31,31 @@ public class JwtService {
                 .signWith(secretKey)
                 .compact();
     }
+
+    public Long extractUserId(String token) {
+
+        String subject = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+
+        return Long.valueOf(subject);
+    }
+
+    public boolean isTokenValid(String token) {
+
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+
+            return true;
+
+        } catch (Exception exception) {
+            return false;
+        }
+    }
 }
