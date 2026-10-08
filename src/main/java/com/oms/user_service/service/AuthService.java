@@ -7,6 +7,7 @@ import com.oms.user_service.dto.LoginRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.exception.ResourceNotFoundException;
 import com.oms.user_service.model.User;
+import com.oms.user_service.util.Status;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,10 @@ public class AuthService {
                 req.usernameOrEmail(),
                 req.usernameOrEmail()
         ).orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
+
+        if (user.getStatus() != Status.ACTIVE) {
+            throw new ResourceNotFoundException("Account is not active");
+        }
 
         boolean passwordMatches = passwordEncoder.matches(req.password(), user.getPasswordHash());
 
