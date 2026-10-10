@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,6 +26,7 @@ public class UserController {
 
     private final IUserService userService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody CreateUserRequest req){
         log.info("Received user data to be processed: {}", req );
@@ -34,6 +36,7 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable("userId") Long userId){
         log.info("Getting user with id: {}", userId);
@@ -50,6 +53,7 @@ public class UserController {
      * @param pageable
      * @return Page(UserResponseDto)
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
             @RequestParam(required = false) Status status,
@@ -72,6 +76,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<UserResponseDto> deleteUser(@PathVariable("userId") Long userId){
         log.info("Deleting user with id : {}", userId);
@@ -80,6 +85,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<String> clear(){
         userService.dropUsers();
@@ -87,6 +93,7 @@ public class UserController {
         return new ResponseEntity<>("Cleared Users", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{userId}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,@Valid @RequestBody UpdateUserRequest req){
         UserResponseDto updatedUser = userService.updateUser(userId, req);
