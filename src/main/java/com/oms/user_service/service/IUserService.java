@@ -16,6 +16,6 @@ public interface IUserService {
     UserResponseDto deleteUserById(Long userId);
     void dropUsers();
     UserResponseDto updateUser(Long id, UpdateUserRequest user);
-    void updateUserStatus(Long id, String state);
+    void updateUserStatus(Long id, Status state);
     UserResponseDto createAdminUser(CreateUserRequest req);
 }

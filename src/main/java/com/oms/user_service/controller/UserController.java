@@ -108,4 +108,19 @@ public class UserController {
 //        userService.updateUserStatus(id, state);
         return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/disable/{userId}")
+    public ResponseEntity<String> disableUser(@PathVariable Long userId){
+        userService.updateUserStatus(userId, Status.DISABLED);
+        return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/lock/{userId}")
+    public ResponseEntity<String> lockUser(@PathVariable Long userId){
+        userService.updateUserStatus(userId, Status.LOCKED);
+        return new ResponseEntity<>("User status updated successfully", HttpStatus.OK);
+    }
 }

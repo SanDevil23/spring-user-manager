@@ -5,6 +5,7 @@ import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
 import com.oms.user_service.dto.UserResponseDto;
 import com.oms.user_service.exception.DuplicateResourceException;
+import com.oms.user_service.exception.ActiveAdminConflictException;
 import com.oms.user_service.exception.ResourceNotFoundException;
 import com.oms.user_service.mapper.UserMapper;
 import com.oms.user_service.model.User;
@@ -115,21 +116,16 @@ public class UserService implements IUserService{
      * @param state
      */
     @Override
-    public void updateUserStatus(Long userid, String state){
+    public void updateUserStatus(Long userid, Status state){
         User userToUpdate = userRepo.findById(userid)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + userid));;
-        state = state.toLowerCase().trim();
-        switch(state) {
-            case "active":
-                userToUpdate.setStatus(Status.ACTIVE);
-                break;
-            case "disabled":
-                userToUpdate.setStatus(Status.DISABLED);
-                break;
-            case "locked":
-                userToUpdate.setStatus(Status.LOCKED);
-                break;
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with the id: " + userid));
+
+        // ADMIN can not update ADMIN
+        if (userToUpdate.isAdmin()){
+            throw new ActiveAdminConflictException("Cannot disable or lock another active administrator account.");
         }
+
+        userToUpdate.setStatus(state);
     }
 
     /**
