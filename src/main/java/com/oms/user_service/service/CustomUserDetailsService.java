@@ -2,6 +2,7 @@ package com.oms.user_service.service;
 
 import com.oms.user_service.dao.UserRepository;
 import com.oms.user_service.model.User;
+import com.oms.user_service.util.Status;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .authorities(
                         user.isAdmin()? "ROLE_ADMIN" : "USER_ROLE"
                 )
+                .disabled(user.getStatus() != Status.ACTIVE)
                 .build();
     }
 }
