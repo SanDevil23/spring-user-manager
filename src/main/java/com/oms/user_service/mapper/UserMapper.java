@@ -13,7 +13,7 @@ public class UserMapper {
         return User.builder()
             .username(req.username())
             .email(req.email())
-            .status(Status.LOCKED)
+            .status(Status.ACTIVE)
             .admin(false)
             .build();
     }
