@@ -29,6 +29,13 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         ))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/scalar",
+                                "/scalar/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
+                        ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users",
                                 "/users/add",
