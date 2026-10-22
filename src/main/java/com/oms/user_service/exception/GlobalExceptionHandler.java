@@ -115,6 +115,7 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    @ExceptionHandler(ActiveAdminConflictException.class)
     public ResponseEntity<ErrorResponse> handleActiveAdminConflictException(
             ActiveAdminConflictException exception,
             HttpServletRequest request

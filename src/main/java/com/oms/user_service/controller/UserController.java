@@ -1,5 +1,10 @@
 
 package com.oms.user_service.controller;
+import com.oms.user_service.exception.ErrorResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import com.oms.user_service.dto.CreateUserRequest;
 import com.oms.user_service.dto.UpdateUserRequest;
@@ -97,7 +102,7 @@ public class UserController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid filter or pagination parameter"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter or pagination parameter", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Authentication required"),
             @ApiResponse(responseCode = "403", description = "Administrator privileges required")
     })
