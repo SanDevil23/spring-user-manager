@@ -126,6 +126,7 @@ public class UserService implements IUserService{
         }
 
         userToUpdate.setStatus(state);
+        userRepo.save(userToUpdate);
     }
 
     /**
