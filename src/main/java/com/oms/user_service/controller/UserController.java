@@ -262,4 +262,26 @@ public class UserController {
         userService.updateUserStatus(userId, Status.LOCKED);
         return ResponseEntity.ok("User status updated successfully");
     }
+
+    @PatchMapping("/activate/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Activate a user",
+            description = "Reactivates a disabled or locked user account."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User activated successfully"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> activateUser(@PathVariable Long userId) {
+        userService.updateUserStatus(userId, Status.ACTIVE);
+        return ResponseEntity.ok("User activated successfully");
+    }
+
 }
